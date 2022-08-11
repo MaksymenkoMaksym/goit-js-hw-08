@@ -17,7 +17,7 @@ function onPlayUpdateTime(event) {
 
 player.on('timeupdate',
     throttle((event) => {
-        onPlayUpdateTime
+        onPlayUpdateTime(event)
     }, 1000));
 
 
@@ -31,52 +31,7 @@ player.getVideoTitle().then(function (title) {
 const timeForSet = localStorage.getItem("videoplayer-current-time");
 
 console.log(Number(timeForSet));
+let duration = +timeForSet <= 570 ? +timeForSet : 0;
 
-player.setCurrentTime(Number(timeForSet)).then(function (seconds) {
-    // seconds = the actual time that the player seeked to
-}).catch(function (error) {
-    switch (error.name) {
-        case 'RangeError':
-            timeForSet = 0;
-            // the time was less than 0 or greater than the video’s duration
-            break;
+player.setCurrentTime(duration);
 
-        default:
-            // some other error occurred
-            break;
-    }
-});
-
-
-player.on('play', function () {
-    console.log('played the video!');
-});
-
-
-
-/*
-<iframe 
-id???
-src="https://player.vimeo.com/video/76979871?h=8272103f6e" 
-width="640"
- height="360" 
- frameborder="0" 
- allowfullscreen
-  allow="autoplay; 
- encrypted-media"></iframe>
-
-<script src="https://player.vimeo.com/api/player.js"></script>
-<script>
-    const iframe = document.querySelector('iframe');
-    const player = new Vimeo.Player(iframe);
-
-    player.on('play', function() {
-        console.log('played the video!');
-    });
-
-    player.getVideoTitle().then(function(title) {
-        console.log('title:', title);
-    });
-</script>
-
-*/
