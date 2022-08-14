@@ -11,22 +11,28 @@ emailInputValue.addEventListener('input', throttle(onInputSave, 500));
 messageInputValue.addEventListener('input', throttle(onInputSave, 500));
 formData.addEventListener('submit', onSubmitreset);
 
-let savedData = JSON.parse(localStorage.getItem("STORAGE_KEY"));
 
-try {
-    messageInputValue.value = savedData?.message ?? ' ';
-    emailInputValue.value = savedData?.email ?? ' ';
+// Спосіб 1
+const server = storage.load(STORAGE_KEY);
 
-} catch (error) {
-    console.log(error.name);
-    console.log(error.message);
-    console.log(error.stack);
+if (server) {
+    messageInputValue.value = server.message;
+    emailInputValue.value = server.email;
+
+    dataFromForm.email = server.email;
+    dataFromForm.message = server.message;
 }
+
+// Спосіб 2 
+// let savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+// messageInputValue.value = savedData?.message ?? ' ';
+// emailInputValue.value = savedData?.email ?? ' ';
+
 
 
 function onInputSave() {
     dataFromForm[this.name] = this.value;
-    localStorage.setItem("STORAGE_KEY", JSON.stringify(dataFromForm));
+    storage.save(STORAGE_KEY, dataFromForm);
 }
 
 function onSubmitreset(event) {
@@ -36,7 +42,7 @@ function onSubmitreset(event) {
         return
     }
 
-    storage.remove("STORAGE_KEY");
+    storage.remove(STORAGE_KEY);
     formData.reset();
     return console.log(dataFromForm);
 }
